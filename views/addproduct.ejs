@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+</head>
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xd" style="display: flex; align-self: flex-end;">
+        <a href="/interfaz" class="sesion">Inicio</a>
+        <a href="/" class="sesion">Cerrar sesión</a>
+        </div>
+    </header>
+    <div class="content-form">
+        <h1 style="padding: 1rem;">Agregar producto</h1>
+        <form action="/products" class="form" method="POST">
+            <label for="">Nombre</label>
+            <input type="text" name="name" required>
+            <label for="">Codigo</label>
+            <input type="text" name="code" required>
+            <label for="">Precio</label>
+            <input type="text" name="price" required>
+            <label for="">Pantalla</label>
+            <input type="text" name="screen" required>
+            <label for="">Procesador</label>
+            <input type="text" name="cpu" required>
+            <label for="">Categoria</label required>
+            <div class="category_products">
+            <% for (const categoria of data) { %>
+                <input type="radio" id="<%=categoria.id%>" name="id_category" value="<%=categoria.id%>" required>   
+                <label for="<%=categoria.id%>"><%= categoria.nombre%></label><br>
+            <% } %>
+        </div>
+            <label for="">Descripcion</label>
+            <textarea name="description" id="" cols="30" rows="10" required></textarea>
+            <div class="enviar">
+                <button>Enviar
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

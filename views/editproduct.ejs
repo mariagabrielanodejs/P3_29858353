@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+</head>
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xd" style="display: flex; align-self: flex-end;">
+        <a href="/interfaz" class="sesion">Inicio</a>
+        <a href="/" class="sesion">Cerrar sesión</a>
+        </div>
+    </header>
+    <div class="content-form">
+        <p style="font-weight: bold; font-size: 2rem; margin-top: .5rem;">Editar producto</p>
+        <form action="/updateproduct/<%=data.id%>" class="form" method="POST">
+            <label for="">Nombre</label>
+            <input type="text" value="<%= data.nombre%>" name="name" required>
+            <label for="">Codigo</label>
+            <input type="text" value="<%= data.codigo%>" name="code" required>
+            <label for="">Precio</label>
+            <input type="text" value="<%= data.precio%>" name="price" required>
+            <label for="">Pantalla</label>
+            <input type="text" value="<%= data.pantalla%>" name="screen" required>
+            <label for="">Procesador</label>
+            <input type="text" value="<%= data.procesador%>" name="cpu" required>
+            <label for="">Categoria</label>
+            <div class="category_products">
+                <% for (const categoria of data_category) { %>
+                    <input type="radio" id="<%=categoria.id%>" name="category_id" value="<%=categoria.id%>" required>   
+                    <label for="<%=categoria.id%>"><%= categoria.nombre%></label><br>
+                <% } %>
+            </div>
+            <label for="">Descripcion</label>
+            <textarea name="description" id="" cols="30" rows="10" required><%=data.descripcion%></textarea>
+            <div class="enviar">
+                <button>Enviar
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

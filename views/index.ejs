@@ -1,12 +1,28 @@
-﻿<!DOCTYPE html>
-<html>
-  <head>
-    <title>Programacion III - Hola Mundo</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-   <h1> Hola Mundo </h1> <p>Nombre/Apellido: Maria Gabriela</p>
-    <p>Cedula: V-29.858.353</p>
-    <p>Sección: 4</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesión</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <style></style>
+</head>
+<body class="login">
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+    </header>
+    <main class="Login-Father">
+        <h1>Login User</h1>
+        <form action="/login" class="Form-Login" method="POST">
+            <label for="">Usuario</label><br>
+            <input type="text" autocomplete="off" required name="user"><br>
+            <label for="">Contraseña</label><br>
+            <input type="password" autocomplete="off" required name="password">
+            <div class="button">
+            <button type="submit" class="login">Enviar</button>
+            </div>
+        </form>
+    </main>
+</body>
 </html>

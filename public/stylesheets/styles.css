@@ -1,0 +1,78 @@
+
+/*Variables*/
+:root {
+    --box-sizing: 350px;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+
+.Form-Login {
+    width:250px;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Login-Father {
+    width: var(--box-sizing);
+    height: var(--box-sizing);
+    background-color: #39A7FF;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 4rem;
+    
+}
+
+.Form-Login,
+h1 {
+    margin-top: 2.4rem;
+    color: white;
+}
+
+input:focus{
+    outline: none;
+}
+
+input{
+    border: 0;
+    padding: .3rem;
+    border-radius: 1.5px;
+width: 100%;}
+
+input[type="text"],
+input[type="password"] {
+    margin-bottom: 10px;
+}
+
+label {
+    font-size: 1.05rem;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    width: 100%;
+    padding: .3rem;
+    cursor: pointer;
+}
+
+button.login {
+    background-color: #4ac1e3;
+}

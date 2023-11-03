@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir imagen</title>
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xd" style="display: flex; align-self: flex-end;">
+        <a href="/interfaz" class="sesion">Inicio</a>
+        <a href="/" class="sesion">Cerrar sesión</a>
+        </div>
+    </header>
+    <p style="font-weight: bold; font-size: 2rem; margin: 1rem 0rem">Editar producto</p>
+    <% for (const producto of data) { %>
+    <form action="/addimg/<%= producto.id%>" class="info img" method="POST">
+        <img src="" alt="" id="img">
+        <h2 id="modelo">Modelo: <%= producto.nombre%> </h2>
+        <p id="descripcion">Descripción: <%= producto.descripcion%> </p>
+        <label for="">Imagen(URL)</label>
+        <input type="text" class="img" name="url_img" required>
+        <% } %>
+        <button>Enviar</button>
+    </form>
+    
+</body>
+</html>

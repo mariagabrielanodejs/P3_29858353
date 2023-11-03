@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <title>Tienda - PC Portatiles</title>
+</head>
+
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xd" style="display: flex; align-self: flex-end;">
+        <a href="/interfaz" class="sesion">Inicio</a>
+        <a href="/" class="sesion">Cerrar sesión</a>
+        </div>
+    </header>
+    <section class="contenido">
+        <section class="categoria">
+            <section class="separacion-div">
+                <h3>Categorias</h3>
+                <% for (const categoria of data) { %>
+                    <a href="#">
+                        <%= categoria.nombre %>
+                    </a>
+                    <!--<% for(let i=0; i < data.length; i++) { %>
+                <a href=""><%= data[i].nombre %></a>
+                <a href="#">Laptop</a>
+                <a href="#">Teléfonos</a>
+                <a href="#">Tablets</a> 
+                <% } %>-->
+
+                    <% } %>
+            </section>
+            <section class="separacion-div">
+                <a href="/addcategory">Agregar categoria</a>
+                <a href="/editcategory">Editar categoria</a>
+                
+            </section>
+        </section>
+        </div>
+        <% if(data.length < 1) { %>
+            <div class="mostrador" id="mostrador">
+                <div class="fila separacion-div product" style="padding: 1rem 0rem 0rem 1rem;">
+                    <h2>Agrega una categoria para agregar un producto</h2>
+                </div>
+            </div>
+            <% } else { %>
+                <div class="mostrador" id="mostrador">
+                    <div class="fila separacion-div product" style="padding: 1rem 0rem 0rem 1rem;">
+                        <a href="/addproduct">Agregar producto</a>
+                    </div>
+                    <% } %>
+                        <div class="fila">
+                            <% for(let i=0; i < data_product.length; i++) { %>
+                                <div class="item" onclick="cargar(this)">
+                                    <div class="contenedor-foto">
+                                        <img src="<%= row_img[i].url %>" alt="" class="img_product">
+                                    </div>
+                                    <p class="descripcion">
+                                        <%= data_product[i].nombre %>
+                                    </p>
+                                    <section class="codigo" style="display: none;">
+                                        <%= data_product[i].codigo %>
+                                    </section>
+                                    <article class="description" style="display: block;">
+                                        <%= data_product[i].descripcion%>
+                                    </article>
+                                    <p class="procesador" style="display: none;">
+                                        <%= data_product[i].procesador %>
+                                    </p>
+                                    <span class="precio">
+                                        <%= data_product[i].precio %>$
+                                    </span>
+                                    <p class="pantalla" style="display: none;">
+                                        <%= data_product[i].pantalla %>
+                                    </p>
+                                    <p class="id" style="display: none;">
+                                        <%= data_product[i].id %>
+                                    </p>
+                                    <p class="img_ghost" id="img_ghost" style="display: none;">
+                                        <%= row_img[i].url %>
+                                    </p>
+                                </div>
+                                <% } %>
+                        </div>
+
+                </div>
+
+
+
+
+
+                <!-- CONTENEDOR DEL ITEM SELECCIONADO -->
+                <div class="seleccion" id="seleccion">
+                    <div class="cerrar" onclick="cerrar()">
+                        &#x2715
+                    </div>
+                    <div class="info">
+                        <img src="" alt="" id="img">
+                        <h2 id="modelo">Modelo: </h2>
+                        <p id="descripcion">Descripción: </p>
+                        <p id="procesador">Procesador: </p>
+                        <p id="pantalla">Pantalla: </p>
+                        <section id="codigo">Código: </section>
+                        <span class="precio" id="precio">Precio: </span>
+                        <div class="fila"><a href="" id="editar" class="buttons">Editar</a></div>
+                        <div class="fila"><a href="" id="eliminar" class="buttons">Eliminar</a></div>
+                        <div class="fila"><a href="" id="subir" class="buttons">Subir imagen</a></div>
+                    </div>
+                </div>
+    </section>
+
+    <script src="/javascripts/script.js"></script>
+</body>
+
+</html>

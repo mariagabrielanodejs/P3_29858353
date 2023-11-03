@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+</head>
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xd" style="display: flex; align-self: flex-end;">
+        <a href="/interfaz" class="sesion">Inicio</a>
+        <a href="/" class="sesion">Cerrar sesión</a>
+        </div>
+    </header>
+    <div class="content-form">
+        <p style="font-weight: bold; font-size: 2rem; margin-top: .5rem;">Editar categoria</p>
+        <% for (const categoria of data) { %>
+        <form action="/updatecategory/<%=categoria.id%>" class="form" style="height: auto;" method="POST">
+            <label for="">Nombre</label>
+            <input type="text" value="<%= categoria.nombre%>" name="updatecategory" required> 
+            <div class="enviar">
+                <button>Enviar
+                </button>
+            </div>
+        </form>
+        <% } %>
+    </div>       
+      </body>
+</html>
