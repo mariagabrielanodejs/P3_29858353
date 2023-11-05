@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const path = require('path');
 const sqlite3 = require("sqlite3").verbose();
-
+require('dotenv').config()
 /*Creacion de la Base de Datos*/
 const dbRoot = path.join(__dirname, "/bd", "dbAdmin.db");
 const dbAdmin = new sqlite3.Database(dbRoot, (err) => {
@@ -124,10 +124,6 @@ router.post('/updatecategory/:id', (req, res) => {
     }
   })
 })
-
-
-
-
 
 
 router.get('/editproduct/:id', (req, res) => {
@@ -268,12 +264,9 @@ router.post('/products', (req, res) => {
 
 
 router.post('/login', (req, res) => {
-  const admin = 'admin';
-  const adminPassword = 1234;
   const user = req.body.user;
   const password = req.body.password;
-
-  if (user == admin && password == adminPassword) {
+  if (user == process.env.ADMIN && password == process.env.ADMIN_PASSWORD) {
     res.redirect('/interfaz')
   }
   else {
