@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <title>Tienda - PC Portatiles</title>
+</head>
+
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xdd" style="display: flex; align-self: flex-end;">
+            <a href="/viewclient" class="sesion">Inicio</a>
+        </div>
+        <img src="/images/hamburguer.svg" alt="" class="hamburguer" id="hamburguer">
+        <img src="/images/failedx.svg" alt="" class="failed" id="failed">
+    </header>
+    <div class="contenido">
+        <section class="categoria" id="categoria">
+            <section class="separacion-div">
+                <h3>Categorias</h3>
+                <a href="/viewclient">Todos</a>
+                <% for (const categoria of data) { %>
+                    <a href="/viewclient/product/<%= categoria.id %>">
+                        <%= categoria.nombre %>
+                    </a>
+                    <!--<% for(let i=0; i < data.length; i++) { %>
+            <a href=""><%= data[i].nombre %></a>
+            <a href="#">Laptop</a>
+            <a href="#">Teléfonos</a>
+            <a href="#">Tablets</a> 
+            <% } %>-->
+                    <% } %>
+                <br>
+                <h3>Nombre</h3>
+                <% for (const categoryName of nameProduct) { %>
+                    <form class="xd" action="/viewclient/product" method="POST">
+                        <input type="text" value="<%= categoryName %>" style="display: none;" name="filter">
+                        <button class="buttonN"><%= categoryName %></button>
+                    </form>
+                <% } %>
+
+                <h3>Pantalla</h3>
+                <% for (const categoryP of namePantalla) { %>
+                    <form class="xd" action="/viewclient/product" method="POST">
+                        <input type="text" value="<%= categoryP %>" style="display: none;" name="filter">
+                        <button class="buttonN"><%= categoryP %></button>
+                    </form>
+                    
+                <% } %>
+                <h3>Procesador</h3>
+                <% for (const categoryPro of nameProcesador) { %>
+                    <form class="xd" action="/viewclient/product" method="POST">
+                        <input type="text" value="<%= categoryPro %>" style="display: none;" name="filter">
+                        <button class="buttonN"><%= categoryPro %></button>
+                    </form>
+                <% } %>
+            </section>
+        </section>
+
+
+        <div class="mostrador" id="mostrador">
+            <div class="fila separacion-div product" style="padding: 1rem 0rem 0rem 1rem;">
+                <div class="options">
+                    <p id="option">Cambiar a lista</p>
+                </div>
+            </div>
+            <div class="fila" id="fila">
+                
+               <% for(let i=0; i < data_product.length; i++) { %>
+                    <a href="/viewproduct/product/<%= data_product[i].id%>" class="a">
+                        <div class="item">
+                            <div class="contenedor-foto">
+                                <img src="<%= row_img[i].url %>" alt="" class="img_product">
+                            </div>
+                            <div class="position">
+                                <p class="descripcion">
+                                    <%= data_product[i].nombre %>
+                                </p>
+                                <section class="codigo" style="display: none;">
+                                    <%= data_product[i].codigo %>
+                                </section>
+                                <article class="description" style="display: block;">
+                                    <%= data_product[i].descripcion%>
+                                </article>
+                                <p class="procesador" style="display: none;">
+                                    <%= data_product[i].procesador %>
+                                </p>
+                                <span class="precio">
+                                    <%= data_product[i].precio %>$
+                                </span>
+                                <p class="pantalla" style="display: none;">
+                                    <%= data_product[i].pantalla %>
+                                </p>
+                                <p class="id" style="display: none;">
+                                    <%= data_product[i].id %>
+                                </p>
+                                
+                            </div>
+                        </div>
+                    </a>
+                    <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/javascripts/button.js"></script>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <title>Tienda - PC Portatiles</title>
+</head>
+
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xd" style="display: flex; align-self: flex-end;">
+            <a href="/viewclient" class="sesion">Inicio</a>
+        </div>
+    </header>
+    <br>
+        <div class="mostrador product" id="mostrador">
+            <div class="product-content">
+                <div class="contenedor-foto">
+                    <img src="<%= row_img.url %>" alt="" class="img_product">
+                </div>
+                <div class="position">
+                    <p class="nombre">
+                        <%= data_product.nombre %>
+                    </p>
+                    <span class="precio">
+                        <span>Precio: </span><%= data_product.precio %>$
+                    </span>
+                    <p class="category">
+                        <span>Categoria: </span><%= data.nombre %>
+                    </p>
+                    
+                    <p class="procesador">
+                        <span>Procesador: </span><%= data_product.procesador %>
+                    </p>
+                    <p class="pantalla">
+                        <span>Pantalla: </span><%= data_product.pantalla %>
+                    </p>                   
+<br>
+                    <p class="cantidad">
+                        Cantidad: <input type="number" name="xd" class="input_cantidad" id="" min="1" required>
+                    </p>
+                    <br>
+                    <article class="description" style="display: block;">
+                        <span>Descripcion: </span><%= data_product.descripcion%>
+                    </article>
+                    <a href="#"><button>Agregar al carrito</button></a>
+                </div>
+                <!--
+                        <div class="item">
+                            <div class="contenedor-foto">
+                                <img src="<%= row_img.url %>" alt="" class="img_product">
+                            </div>
+                            <div class="position">
+                                <p class="descripcion">
+                                    <%= data_product.nombre %>
+                                </p>
+                                <section class="codigo">
+                                    <%= data_product.codigo %>
+                                </section>
+                                <article class="description" style="display: block;">
+                                    <%= data_product.descripcion%>
+                                </article>
+                                <p class="procesador">
+                                    <%= data_product.procesador %>
+                                </p>
+                                <span class="precio">
+                                    <%= data_product.precio %>
+                                </span>
+                                <p class="pantalla">
+                                    <%= data_product.pantalla %>
+                                </p>
+                            </div>
+                        </div>
+                        -->
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/javascripts/button.js"></script>
+
+</html>

@@ -40,7 +40,6 @@ router.get('/', function (req, res, next) {
 });
 
 
-
 router.get('/interfaz', (req, res) => {
   const sql = "SELECT * FROM categorias";
   dbAdmin.all(sql, [], (err, rows) => {
@@ -55,7 +54,6 @@ router.get('/interfaz', (req, res) => {
           row_img: rows_img
         });
       })
-
     })
   })
 })
@@ -98,7 +96,7 @@ router.post('/addimg/:id', (req, res) => {
   const id = req.params.id;
   const producto_id = id;
   const img_url = req.body.url_img;
-  const query = [producto_id,img_url, destacado,id]
+  const query = [producto_id, img_url, destacado, id]
   const sql = "UPDATE imagenes SET producto_id = ?, url = ?, destacado = ? WHERE ( id = ?)"
   dbAdmin.run(sql, query, (err) => {
     if (err) {
@@ -141,19 +139,19 @@ router.get('/editproduct/:id', (req, res) => {
   })
 })
 
-router.get("/deleteproduct/:id",(req, res)=>{
-	const id=req.params.id;
-	const sql="DELETE FROM productos WHERE id = ?";
+router.get("/deleteproduct/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "DELETE FROM productos WHERE id = ?";
   const sql_img = "DELETE FROM imagenes WHERE id = ?"
-	dbAdmin.run(sql, id, err =>{	
-			dbAdmin.run(sql_img,id, err => {
-        if(err){
-          console.log(err);
-        }else{
-          res.redirect('/interfaz')
-        }
-      })
-	});
+  dbAdmin.run(sql, id, err => {
+    dbAdmin.run(sql_img, id, err => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.redirect('/interfaz')
+      }
+    })
+  });
 })
 /*
 router.get("/deletecategory",(req, res)=>{
@@ -239,7 +237,7 @@ router.get('/addcategory', (req, res) => {
 
 
 router.post('/products', (req, res) => {
-  const url_ghost = '';
+  const url_ghost = 'https://cdn2.iconfinder.com/data/icons/symbol-blue-set-3/100/Untitled-1-94-512.png';
   const id = '';
   const destacado = 1;
   const name = req.body.name;
@@ -251,10 +249,10 @@ router.post('/products', (req, res) => {
   const id_category = req.body.id_category;
   dbAdmin.run(`INSERT INTO productos (nombre, codigo, precio, descripcion, pantalla, procesador, categoria_id) VALUES (?,?,?,?,?,?,?);`,
     [name, code, price, description, screen, cpu, id_category], (err) => {
-      dbAdmin.run(`INSERT INTO imagenes (producto_id,url,destacado) VALUES (?,?,?)`,[id,url_ghost,destacado], (err) =>{
-        if(err){
+      dbAdmin.run(`INSERT INTO imagenes (producto_id,url,destacado) VALUES (?,?,?)`, [id, url_ghost, destacado], (err) => {
+        if (err) {
           console.log(err)
-        }else{
+        } else {
           res.redirect('/interfaz')
         }
       })
@@ -266,12 +264,143 @@ router.post('/products', (req, res) => {
 router.post('/login', (req, res) => {
   const user = req.body.user;
   const password = req.body.password;
-  if (user == process.env.ADMIN && password == process.env.ADMIN_PASS) {
+  if (user == process.env.ADMIN && password == process.env.ADMIN_PASSWORD) {
     res.redirect('/interfaz')
   }
   else {
     res.redirect('/')
   }
+})
+
+
+
+/*Client view*/
+
+router.get('/viewclient', (req, res) => {
+  const sql = "SELECT * FROM categorias";
+  dbAdmin.all(sql, (err, rows) => {
+    console.log(rows)
+    const sql_product = "SELECT * FROM productos"
+    dbAdmin.all(sql_product, (err, rows_product) => {
+      const a = []
+      const b = []
+      const c = []
+      for (let i = 0; i < rows_product.length; i++) {
+        a.push(rows_product[i].nombre);
+        b.push(rows_product[i].pantalla);
+        c.push(rows_product[i].procesador);
+      }
+      const unicos = new Set(a);
+      const unicosP = new Set(b);
+      const unicosPro = new Set(c);
+      const sql_img = "SELECT * FROM imagenes";
+      dbAdmin.all(sql_img, (err, rows_img) => {
+        res.render("viewclient", {
+          data: rows,
+          data_product: rows_product,
+          row_img: rows_img,
+          nameProduct: unicos,
+          namePantalla: unicosP,
+          nameProcesador: unicosPro
+        });
+      })
+    })
+  })
+})
+
+
+
+
+
+router.get('/viewclient/product/:id', (req, res) => {
+  const { id } = req.params;
+  const sql = "SELECT * FROM productos WHERE categoria_id = ?";
+  const sql_img = "SELECT productos.*, imagenes.url FROM productos LEFT JOIN imagenes ON productos.id = imagenes.producto_id WHERE productos.categoria_id = ?"
+  const sql_cat = "SELECT * FROM categorias";
+  dbAdmin.all(sql, id, (err, rowsProduct) => {
+    const a = []
+    const b = []
+    const c = []
+    for (let i = 0; i < rowsProduct.length; i++) {
+      a.push(rowsProduct[i].nombre);
+      b.push(rowsProduct[i].pantalla);
+      c.push(rowsProduct[i].procesador);
+    }
+    const unicos = new Set(a);
+    const unicosP = new Set(b);
+    const unicosPro = new Set(c);
+    dbAdmin.all(sql_img, id,(err, rowsImg) => {
+      dbAdmin.all(sql_cat, (err, rowsCategory) => {
+        res.render("viewclient", {
+          data: rowsCategory,
+          data_product: rowsProduct,
+          row_img: rowsImg,
+          nameProduct: unicos,
+          namePantalla: unicosP,
+          nameProcesador: unicosPro
+        });
+      })
+    })
+  })
+})
+
+
+router.get('/viewproduct/product/:id', (req, res) => {
+  const { id } = req.params;
+  const sql = "SELECT * FROM productos WHERE id = ?";
+  const sql_img = "SELECT * FROM imagenes WHERE producto_id = ?";
+  const sqlCategory = "SELECT * FROM categorias WHERE id = ?"
+  dbAdmin.get(sql, id, (err, rowsProduct) => {
+    dbAdmin.get(sql_img, id, (err, rowsImg) => {
+      const categoria_id = rowsProduct.categoria_id;
+      dbAdmin.get(sqlCategory, categoria_id, (err, rowsCategory) => {
+        res.render("viewproduct", {
+          data: rowsCategory,
+          data_product: rowsProduct,
+          row_img: rowsImg
+        });
+      })
+    })
+  })
+})
+
+
+
+router.post('/viewclient/product', (req, res) => {
+  const { filter } = req.body;
+  const sql = "SELECT * FROM productos WHERE nombre = ? OR pantalla = ? OR procesador = ?";
+  const sql_query = "SELECT * FROM productos";
+  const sql_img = "SELECT productos.*, imagenes.url FROM productos LEFT JOIN imagenes ON productos.id = imagenes.producto_id WHERE productos.nombre = ? OR productos.pantalla = ? OR productos.procesador = ?"
+  const sql_cat = "SELECT * FROM categorias";
+  const query = [filter, filter, filter];
+  dbAdmin.all(sql_query, (err, row) => {
+    const a = []
+    const b = []
+    const c = []
+    for (let i = 0; i < row.length; i++) {
+      a.push(row[i].nombre);
+      b.push(row[i].pantalla);
+      c.push(row[i].procesador);
+    }
+    const unicos = new Set(a);
+    const unicosP = new Set(b);
+    const unicosPro = new Set(c);
+    dbAdmin.all(sql, query, (err, rowsProduct) => {
+      console.log(rowsProduct)
+      dbAdmin.all(sql_img,query, (err, rowsImg) => {
+        dbAdmin.all(sql_cat, (err, rowsCategory) => {
+          res.render("viewclient", {
+            data: rowsCategory,
+            data_product: rowsProduct,
+            row_img: rowsImg,
+            nameProduct: unicos,
+            namePantalla: unicosP,
+            nameProcesador: unicosPro
+          });
+        })
+      })
+    })
+  })
 })
 
 

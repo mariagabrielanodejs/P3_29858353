@@ -18,7 +18,7 @@
         </div>
     </header>
     <section class="contenido">
-        <section class="categoria">
+        <section class="categoria cat">
             <section class="separacion-div">
                 <h3>Categorias</h3>
                 <% for (const categoria of data) { %>
@@ -40,7 +40,6 @@
                 
             </section>
         </section>
-        </div>
         <% if(data.length < 1) { %>
             <div class="mostrador" id="mostrador">
                 <div class="fila separacion-div product" style="padding: 1rem 0rem 0rem 1rem;">
