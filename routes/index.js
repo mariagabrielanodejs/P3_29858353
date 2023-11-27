@@ -15,9 +15,8 @@ const products = "CREATE TABLE productos (id INTEGER PRIMARY KEY AUTOINCREMENT,n
 const images = "CREATE TABLE imagenes (id INTEGER PRIMARY KEY AUTOINCREMENT,producto_id INTEGER NOT NULL,url TEXT NOT NULL,destacado BOOLEAN NOT NULL,FOREIGN KEY (producto_id) REFERENCES productos (id));"
 
 dbAdmin.run(category, (err) => {
-  if (err) {
-
-  }
+  let question = err ? err: 'success table category';
+  console.log(question)
 })
 
 dbAdmin.run(products, (err) => {
@@ -366,13 +365,13 @@ router.get('/viewproduct/product/:id', (req, res) => {
 
 
 
-router.post('/viewclient/product', (req, res) => {
-  const { filter } = req.body;
+router.get('/viewclient/:nombre', (req, res) => {
+  const { nombre } = req.params;
   const sql = "SELECT * FROM productos WHERE nombre = ? OR pantalla = ? OR procesador = ?";
   const sql_query = "SELECT * FROM productos";
   const sql_img = "SELECT productos.*, imagenes.url FROM productos LEFT JOIN imagenes ON productos.id = imagenes.producto_id WHERE productos.nombre = ? OR productos.pantalla = ? OR productos.procesador = ?"
   const sql_cat = "SELECT * FROM categorias";
-  const query = [filter, filter, filter];
+  const query = [nombre, nombre, nombre];
   dbAdmin.all(sql_query, (err, row) => {
     const a = []
     const b = []
