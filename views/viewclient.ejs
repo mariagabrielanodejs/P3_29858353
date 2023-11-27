@@ -36,27 +36,25 @@
                 <br>
                 <h3>Nombre</h3>
                 <% for (const categoryName of nameProduct) { %>
-                    <form class="xd" action="/viewclient/product" method="POST">
-                        <input type="text" value="<%= categoryName %>" style="display: none;" name="filter">
-                        <button class="buttonN"><%= categoryName %></button>
-                    </form>
-                <% } %>
+                    
+                    <a class="enlace" href="/viewclient/<%= categoryName %>" style="cursor: pointer;"><%= categoryName %></a>
 
-                <h3>Pantalla</h3>
-                <% for (const categoryP of namePantalla) { %>
-                    <form class="xd" action="/viewclient/product" method="POST">
-                        <input type="text" value="<%= categoryP %>" style="display: none;" name="filter">
-                        <button class="buttonN"><%= categoryP %></button>
-                    </form>
                     
                 <% } %>
+                <br>
+                <h3>Pantalla</h3>
+                <% for (const categoryP of namePantalla) { %>
+                   
+                        <a  class="enlace" href="/viewclient/<%= categoryP %>"  style="cursor: pointer;"><%= categoryP %></a>
+                    
+                <% } %>
+                <br>
                 <h3>Procesador</h3>
                 <% for (const categoryPro of nameProcesador) { %>
-                    <form class="xd" action="/viewclient/product" method="POST">
-                        <input type="text" value="<%= categoryPro %>" style="display: none;" name="filter">
-                        <button class="buttonN"><%= categoryPro %></button>
-                    </form>
+                   
+                        <a class="enlace" href="/viewclient/<%= categoryPro %>" style="cursor: pointer;"><%= categoryPro %></a>
                 <% } %>
+                <br>
             </section>
         </section>
 
@@ -73,7 +71,7 @@
                     <a href="/viewproduct/product/<%= data_product[i].id%>" class="a">
                         <div class="item">
                             <div class="contenedor-foto">
-                                <img src="<%= row_img[i].url %>" alt="" class="img_product">
+                                <img src="<%= row_img[i ].url %>" alt="" class="img_product">
                             </div>
                             <div class="position">
                                 <p class="descripcion">
