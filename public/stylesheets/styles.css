@@ -22,20 +22,23 @@ body {
     height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center;    
 }
 
 .Login-Father {
     width: var(--box-sizing);
     height: var(--box-sizing);
     background-color: #39A7FF;
-    border-radius: 5px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-top: 4rem;
+    margin-top: 6rem;
     
 }
+
+
+
 
 .Form-Login,
 h1 {
@@ -50,7 +53,7 @@ input:focus{
 input{
     border: 0;
     padding: .3rem;
-    border-radius: 1.5px;
+    border-radius: 4px;
 width: 100%;}
 
 input[type="text"],
@@ -60,6 +63,7 @@ input[type="password"] {
 
 label {
     font-size: 1.05rem;
+    position: relative;
 }
 
 .button {
@@ -74,5 +78,27 @@ button {
 }
 
 button.login {
-    background-color: #4ac1e3;
+    background-color: white;
+    color: #39A7FF;
+    border-radius: 5px;
+}
+
+.name {
+    position:relative;
+}
+
+.user, .password {
+    position:absolute;
+    left: -28px;
+}
+
+.password {
+    left: -27px;
+}
+
+.footer {
+    width: 100%;
+    position: fixed;
+    bottom: -9rem;
+    
 }
