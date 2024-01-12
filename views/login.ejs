@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesión</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <style></style>
+</head>
+
+<body class="login">
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+    </header>
+    <main class="Login-Father">
+        <h1>Inicio de sesión</h1>
+        <form action="/cliente/login" class="Form-Login" method="POST">
+            <label for="">Correo</label><br>
+            <div class="name">
+                <input type="email" autocomplete="off" required name="corre">
+                <img src="/images/account.svg" alt="" class="user">
+            </div>
+
+            <label for="">Contraseña</label><br>
+            <div class="name">
+                
+                <input type="password" autocomplete="off" required name="contrasena">
+                <img src="/images/locked.svg" alt="" class="password">
+            </div>
+            <a href="/cliente/registro" style="color: white;">¿No tienes cuenta?</a>
+            <div class="button">
+                <button type="submit" class="login">Enviar</button>
+            </div>
+        </form>
+    </main>
+    <section class="footer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#0099ff" fill-opacity="1" d="M0,64L48,85.3C96,107,192,149,288,149.3C384,149,480,107,576,96C672,85,768,107,864,133.3C960,160,1056,192,1152,181.3C1248,171,1344,117,1392,90.7L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
+    </section>
+</body>
+
+</html>

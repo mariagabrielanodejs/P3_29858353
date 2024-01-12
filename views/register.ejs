@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesión</title>
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+</head>
+
+<body class="login">
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+    </header>
+    <main class="Login-Father" style="height: auto; margin-top: 2.3rem;">
+        <h1>Registro</h1>
+        <form action="/cliente/registro" class="Form-Login" method="POST">
+
+            <label for="">Nombre/Apellido</label><br>
+            <div class="name">
+                <input type="text" autocomplete="off" required name="user">
+                <img src="/images/account.svg" alt="" class="user">
+            </div>
+
+            <label for="">Edad</label><br>
+            <div class="name">
+                <input type="text" autocomplete="off" required name="edad">
+                <img src="/images/account.svg" alt="" class="user">
+            </div>
+            <label for="">DNI</label><br>
+            <div class="name">
+                <input type="text" autocomplete="off" required name="dni">
+                <img src="/images/account.svg" alt="" class="user">
+            </div>
+            <label for="">Correo</label><br>
+            <div class="name">
+                <input type="email" autocomplete="off" required name="corre">
+                <img src="/images/account.svg" alt="" class="user">
+            </div>
+            <label for="">Contraseña</label><br>
+            <div class="name">
+                <input type="password" autocomplete="off" required name="contrasena">
+                <img src="/images/locked.svg" alt="" class="password">
+            </div>
+            <a href="/cliente/login" style="color: white;">¿Tienes cuenta?</a>
+            <div class="g-recaptcha" data-sitekey="6LeDoU0pAAAAAKrR_vjbnVzb5GCGwCjE6qjaBAEJ"></div>
+            <div class="button">
+                <button type="submit" class="login">Enviar</button>
+            </div>
+        </form>
+    </main>
+
+</body>
+
+</html>

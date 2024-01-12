@@ -412,15 +412,15 @@ a.a:hover {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: center;
+    gap:40px;
     
 }
 
 .product-content {
-    display: flex;
-    margin-left: 10rem;
     align-items: center;
     flex-wrap: wrap;
-    width: 1000px;
+    
 }
 
 .product-content .position {

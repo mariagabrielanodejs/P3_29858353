@@ -31,3 +31,4 @@ failed.addEventListener('click',(e) => {
     hamburguer.classList.remove('desaparece')
     failed.classList.remove('aparece');
 })
+

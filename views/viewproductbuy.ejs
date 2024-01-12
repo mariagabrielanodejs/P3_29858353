@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <link rel="stylesheet" href="/stylesheets/hielo.css">
+    <title>Tienda - PC Portatiles</title>
+</head>
+
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xd" style="display: flex; align-self: flex-end;">
+            <a href="/viewclient" class="sesion">Inicio</a>
+        </div>
+    </header>
+    <br>
+    <div class="mostrador product" id="mostrador">
+        <div class="product-content">
+            <div class="contenedor-foto">
+                <img src="<%= row_img.url %>" alt="" class="img_product">
+            </div>
+            <div class="position">
+                <p class="nombre">
+                    <%= data_product.nombre %>
+                </p>
+                <article class="description" style="display: block;">
+                    <span>Descripcion: </span>
+                    <%= data_product.descripcion%>
+                </article>
+                
+                <br>
+
+               
+            </div>
+            <!--
+                        <div class="item">
+                            <div class="contenedor-foto">
+                                <img src="<%= row_img.url %>" alt="" class="img_product">
+                            </div>
+                            <div class="position">
+                                <p class="descripcion">
+                                    <%= data_product.nombre %>
+                                </p>
+                                <section class="codigo">
+                                    <%= data_product.codigo %>
+                                </section>
+                                <article class="description" style="display: block;">
+                                    <%= data_product.descripcion%>
+                                </article>
+                                <p class="procesador">
+                                    <%= data_product.procesador %>
+                                </p>
+                                <span class="precio">
+                                    <%= data_product.precio %>
+                                </span>
+                                <p class="pantalla">
+                                    <%= data_product.pantalla %>
+                                </p>
+                            </div>
+                        </div>
+                        -->
+        </div>
+        <div class="container">
+            <form action="/submit_payment/<%= data_product.id%>" method="POST">
+                
+                <label for="ccnum"><b>Número de Tarjeta de Crédito</b></label>
+                <input type="text" id="ccnum" maxlength="16" name="numerotarjeta" pattern="[0-9]{16}" placeholder="1111222233334444"
+                    required>
+
+                <label for="expmonth"><b>Mes de Expiración</b></label>
+                <input type="text" id="expmonth" maxlength="2" name="mes" pattern="(0[1-9]|1[0-2])" placeholder="09" required>
+
+                <div class="row">
+                    <div class="col-50">
+                        <label for="expyear"><b>Año de Expiración</b></label>
+                        <input type="text" id="expyear" maxlength="4" name="año" pattern="[0-9]{4}" placeholder="2024" required>
+                    </div>
+                    <div class="col-50">
+                        <label for="cvv"><b>CVV</b></label>
+                        <input type="text" id="cvv" name="cvv" maxlength="3"  pattern="[0-9]{3}" placeholder="352" required>
+                    </div>
+                </div>
+                <span class="cantidad">
+                    <span>Precio: </span>
+                    $<%= preci %>
+                </span>
+
+                <br>
+                <p class="cantidad">
+                    Cantidad: <%= cantida %> unidades
+                </p>
+                <span class="cantidad" style="font-weight: bold;">
+                    Total a pagar: $<%= tota %>
+                </span>
+                <input type="hidden" name="cantidad" value="<%= cantida %>">
+                <input type="hidden" name="precio" value="<%= preci %>">
+                <input type="hidden" name="total" value="<%= tota %>">
+                <button type="submit">Enviar Pago</button>
+
+            </form>
+        </div>
+    </div>
+
+
+
+    
+</body>
+<script src="/javascripts/button.js"></script>
+
+</html>

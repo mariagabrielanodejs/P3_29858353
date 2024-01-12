@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const { promisify } = require('util');
 const sqlite3 = require("sqlite3").verbose();
 require('dotenv').config()
 /*Creacion de la Base de Datos*/
@@ -13,9 +16,12 @@ const dbAdmin = new sqlite3.Database(dbRoot, (err) => {
 const category = "CREATE TABLE categorias (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre TEXT NOT NULL);";
 const products = "CREATE TABLE productos (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre TEXT NOT NULL,codigo TEXT NOT NULL,precio NUMERIC NOT NULL,descripcion TEXT NOT NULL,categoria_id INTEGER NOT NULL,pantalla TEXT NOT NULL,procesador TEXT NOT NULL,FOREIGN KEY (categoria_id) REFERENCES categorias (id))";
 const images = "CREATE TABLE imagenes (id INTEGER PRIMARY KEY AUTOINCREMENT,producto_id INTEGER NOT NULL,url TEXT NOT NULL,destacado BOOLEAN NOT NULL,FOREIGN KEY (producto_id) REFERENCES productos (id));"
+const clientes = "CREATE TABLE clientes (id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(255) NOT NULL,edad VARCHAR(255) NOT NULL,dni VARCHAR(255) NOT NULL,email VARCHAR(255) NOT NULL,contrasena VARCHAR(255) NOT NULL);"
+const ventas = "CREATE TABLE ventas (cliente_id INTEGER NOT NULL,producto_id INTEGER NOT NULL,cantidad INTEGER NOT NULL,total_pagado DECIMAL(10,2),fecha INTEGER NOT NULL,ip_cliente VARCHAR(200),FOREIGN KEY (cliente_id) REFERENCES clientes(id),FOREIGN KEY (producto_id) REFERENCES productos(id));"
+
 
 dbAdmin.run(category, (err) => {
-  let question = err ? err: 'success table category';
+  let question = err ? err : 'success table category';
   console.log(question)
 })
 
@@ -29,7 +35,67 @@ dbAdmin.run(images, (err) => {
   console.log(question)
 })
 
+dbAdmin.run(clientes, (err) => {
+  let question = err ? err : 'success table clients';
+  console.log(question)
+})
+
+dbAdmin.run(ventas, (err) => {
+  let question = err ? err : 'success table ventas';
+  console.log(question)
+})
+
+
 /*=================================*/
+
+
+pr = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      const tokenAuthorized = await promisify(jwt.verify)(req.cookies.jwt, 'token');
+      if (tokenAuthorized) {
+        return next();
+      }
+      req.user = row.id;
+    } catch (error) {
+      console.log(error);
+      return next();
+    }
+  } else {
+    res.redirect("/cliente/login");
+  }
+};
+/*Proteger el login*/
+prl = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      const tokenAuthorized = await promisify(jwt.verify)(req.cookies.jwt, 'token');
+      if (tokenAuthorized) {
+        res.redirect("/viewclient");
+      }
+    } catch (error) {
+      console.log(error);
+      res.redirect("/viewclient");
+    }
+  } else {
+    return next();
+  }
+};
+
+logout = async (req, res) => {
+  res.clearCookie("jwt");
+  return res.redirect("/cliente/login");
+};
+
+
+
+
+
+
+
+
+
+
 
 
 /*Vistas*/
@@ -55,7 +121,7 @@ router.get('/interfaz', (req, res) => {
       })
     })
   })
-})
+});
 
 
 
@@ -328,7 +394,7 @@ router.get('/viewclient/product/:id', (req, res) => {
     const unicos = new Set(a);
     const unicosP = new Set(b);
     const unicosPro = new Set(c);
-    dbAdmin.all(sql_img, id,(err, rowsImg) => {
+    dbAdmin.all(sql_img, id, (err, rowsImg) => {
       dbAdmin.all(sql_cat, (err, rowsCategory) => {
         res.render("viewclient", {
           data: rowsCategory,
@@ -348,11 +414,10 @@ router.get('/viewproduct/product/:id', (req, res) => {
   const { id } = req.params;
   const sql = "SELECT * FROM productos WHERE id = ?";
   const sql_img = "SELECT * FROM imagenes WHERE producto_id = ?";
-  const sqlCategory = "SELECT * FROM categorias WHERE id = ?"
+  const sqlCategory = "SELECT * FROM categorias"
   dbAdmin.get(sql, id, (err, rowsProduct) => {
     dbAdmin.get(sql_img, id, (err, rowsImg) => {
-      const categoria_id = rowsProduct.categoria_id;
-      dbAdmin.get(sqlCategory, categoria_id, (err, rowsCategory) => {
+      dbAdmin.all(sqlCategory, (err, rowsCategory) => {
         res.render("viewproduct", {
           data: rowsCategory,
           data_product: rowsProduct,
@@ -362,6 +427,82 @@ router.get('/viewproduct/product/:id', (req, res) => {
     })
   })
 })
+
+router.post('/viewproduct/product/:id', pr, (req, res) => {
+  const { id } = req.params;
+  const precio = req.body.precio;
+  const cantidad = req.body.cantidad;
+  const total = (cantidad * precio)
+  const sql = "SELECT * FROM productos WHERE id = ?";
+  const sql_img = "SELECT * FROM imagenes WHERE producto_id = ?";
+  const sqlCategory = "SELECT * FROM categorias"
+  dbAdmin.get(sql, id, (err, rowsProduct) => {
+    dbAdmin.get(sql_img, id, (err, rowsImg) => {
+      dbAdmin.all(sqlCategory, (err, rowsCategory) => {
+        res.render("viewproductbuy", {
+          data: rowsCategory,
+          data_product: rowsProduct,
+          row_img: rowsImg,
+          preci: precio,
+          cantida: cantidad,
+          tota: total
+        });
+      })
+    })
+  })
+})
+
+router.post('/submit_payment/:id', async (req, res) => {
+  const { id } = req.params;
+  const numerotarjeta = req.body.numerotarjeta;
+  const mes = req.body.mes;
+  const ano = req.body.año;
+  const cvv = req.body.cvv;
+  const cantidad = req.body.cantidad;
+  const total = req.body.total;
+  const fecha = new Date();
+  const fechaHoy = fecha.toString();
+  const ipcliente = (req.headers['x-forwarded-for'] || '').split(',')[0] || req.connection.remoteAddress;
+  try {
+    const response = await fetch('https://fakepayment.onrender.com/payments', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ` + process.env.PAYMENT,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        amount: total,
+        "card-number": numerotarjeta,
+        cvv: cvv,
+        "expiration-month": mes,
+        "expiration-year": ano,
+        "full-name": "APPROVED",
+        currency: "USD",
+        description: "Transsaction Successfull",
+        reference: "payment_id:10"
+      }),
+    });
+    const result = await response.json();
+    if (result.success) {
+      const tokenauth = await promisify(jwt.verify)(req.cookies.jwt, 'token');
+      const cliente_id = tokenauth.id;
+
+      dbAdmin.run(`INSERT INTO ventas(cliente_id,producto_id,cantidad,total_pagado,fecha,ip_cliente) VALUES(?,?,?,?,?,?)`, [cliente_id, id, cantidad, total, fechaHoy, ipcliente], (err, row) => {
+        if (err) {
+          console.log(err)
+        } else {
+          res.redirect('/viewclient');
+        }
+      })
+    }
+
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+
+
 
 
 
@@ -385,8 +526,7 @@ router.get('/viewclient/:nombre', (req, res) => {
     const unicosP = new Set(b);
     const unicosPro = new Set(c);
     dbAdmin.all(sql, query, (err, rowsProduct) => {
-      console.log(rowsProduct)
-      dbAdmin.all(sql_img,query, (err, rowsImg) => {
+      dbAdmin.all(sql_img, query, (err, rowsImg) => {
         dbAdmin.all(sql_cat, (err, rowsCategory) => {
           res.render("viewclient", {
             data: rowsCategory,
@@ -400,7 +540,72 @@ router.get('/viewclient/:nombre', (req, res) => {
       })
     })
   })
-})
+});
 
+
+router.post('/cliente/login', (req, res) => {
+  const { corre, contrasena } = req.body;
+  dbAdmin.get(`SELECT * FROM clientes WHERE email = ? AND contrasena = ?`, [corre, contrasena], (err, row) => {
+    if (row) {
+      const id = row.id;
+      const token = jwt.sign({ id: id }, 'token');
+      res.cookie("jwt", token);
+      res.redirect('/viewclient')
+    }
+    else {
+      console.log('Datos incorrectos');
+      res.redirect('/cliente/login');
+    }
+  })
+})
+router.get('/cliente/login',prl, (req, res) => {
+  res.render('login');
+});
+
+router.get('/cliente/registro', (req, res) => {
+  res.render('register');
+});
+
+router.post('/cliente/registro', async (req, res) => {
+  const { user, edad, dni, corre, contrasena } = req.body;
+  const secretKey = "6LeDoU0pAAAAAIBcBUhaf8sIyoF2RJojZ-blAmTI"
+  const gRecaptchaResponse = req.body['g-recaptcha-response'];
+  const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${gRecaptchaResponse}`, {
+    method: 'POST',
+  });
+
+  let verify = await response.json();
+
+  if (verify.success == true) {
+    dbAdmin.get(`SELECT * FROM clientes WHERE email = ?`, [corre], (err, row) => {
+      if (row) {
+
+        res.redirect('/cliente/registro')
+      } else {
+        dbAdmin.get(`INSERT INTO clientes(name,edad,dni,email,contrasena) VALUES(?,?,?,?,?)`, [user, edad, dni, corre, contrasena], (err, rows) => {
+          if (err) {
+            console.log(err)
+          } else {
+            res.redirect('/cliente/login')
+          }
+        })
+      }
+    })
+  }else{
+    res.status(500).send('Verifica el captcha para continuar');
+  }
+});
+
+
+
+router.get('/interfazclientes', (req, res) => {
+  const query = "SELECT productos.*, clientes.*, ventas.total_pagado, ventas.cantidad FROM productos JOIN ventas ON productos.id = ventas.producto_id JOIN clientes ON clientes.id = ventas.cliente_id;"
+  dbAdmin.all(query, (err, data) => {
+    res.render('interfazclientes', {
+      data_product: data
+    });
+  })
+
+})
 
 module.exports = router;

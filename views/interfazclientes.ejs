@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/estilo.css">
+    <title>Tienda - PC Portatiles</title>
+</head>
+
+<body>
+    <header class="header">
+        <img src="/images/3556550.png" alt="">
+        <div class="xd" style="display: flex; align-self: flex-end;">
+            <a href="/interfaz" class="sesion">Inicio</a>
+            <a href="/" class="sesion">Cerrar sesión</a>
+        </div>
+    </header>
+    <section class="contenido">
+
+        <div class="mostrador" id="mostrador">
+
+            <div class="fila">
+                <% for(let i=0; i < data_product.length; i++) { %>
+                    <div class="item" style="max-width: 500px; text-align: start;">
+                        
+                        <p class="procesador">
+                            Nombre: <%= data_product[i].name %>
+                        </p>
+                        <article class="description" style="display: block;">
+                            DNI: <%= data_product[i].dni%>
+                        </article>
+                        <p class="procesador" style="display: none;">
+                            Edad: <%= data_product[i].edad %>
+                        </p>
+                        <p class="procesador" style="display: none;">
+                            Email: <%= data_product[i].email %>
+                        </p>
+                        <br>
+                        <p>Compras realizadas:</p>
+                        <p class="descripcion">
+                            Nombre: <%= data_product[i].nombre %>
+                        </p>
+                        <article class="description" style="display: block;">
+                            Descripcion: <%= data_product[i].descripcion%>
+                        </article>
+                        <article class="description" style="display: block;">
+                            Monto pagado: <%= data_product[i].total_pagado%>$
+                        </article>
+                    </div>
+                    <% } %>
+            </div>
+
+        </div>
+
+
+
+
+
+
+    </section>
+</body>
+
+</html>

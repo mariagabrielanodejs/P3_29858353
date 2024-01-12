@@ -37,16 +37,20 @@
                     </p>
                     <p class="pantalla">
                         <span>Pantalla: </span><%= data_product.pantalla %>
-                    </p>                   
-<br>
-                    <p class="cantidad">
-                        Cantidad: <input type="number" name="xd" class="input_cantidad" id="" min="1" required>
                     </p>
-                    <br>
                     <article class="description" style="display: block;">
                         <span>Descripcion: </span><%= data_product.descripcion%>
                     </article>
-                    <a href="#"><button>Agregar al carrito</button></a>
+<br>                <form action="/viewproduct/product/<%= data_product.id %>" method="POST">
+                    <p class="cantidad">
+                        Cantidad: <input type="number" name="cantidad" class="input_cantidad" id="" min="1" required>
+                        <input type="hidden" name="precio" value="<%= data_product.precio %>">
+                    </p>
+                    
+                    <br>
+                    
+                    <button>Agregar al carrito</button>
+                    </form>
                 </div>
                 <!--
                         <div class="item">
