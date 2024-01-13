@@ -327,7 +327,7 @@ router.post('/products', (req, res) => {
 
 
 router.post('/login', (req, res) => {
-  const user = req.body.user;
+  const user = req.body.name;
   const password = req.body.password;
   if (user == process.env.ADMIN && password == process.env.ADMIN_PASSWORD) {
     res.redirect('/interfaz')
