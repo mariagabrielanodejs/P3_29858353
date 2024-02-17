@@ -181,6 +181,10 @@ a:hover {
     transition: .5s all;
 }
 
+.star:hover {
+    padding: 0;
+    transition: 0;
+}
 
 
 .categoria > a {

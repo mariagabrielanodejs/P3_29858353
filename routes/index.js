@@ -4,46 +4,15 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const { promisify } = require('util');
+const nodemailer = require('nodemailer');
 const sqlite3 = require("sqlite3").verbose();
-require('dotenv').config()
+require('dotenv').config();
 /*Creacion de la Base de Datos*/
 const dbRoot = path.join(__dirname, "/bd", "dbAdmin.db");
 const dbAdmin = new sqlite3.Database(dbRoot, (err) => {
   let question = err ? err : 'database success';
   console.log(question);
 });
-
-const category = "CREATE TABLE categorias (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre TEXT NOT NULL);";
-const products = "CREATE TABLE productos (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre TEXT NOT NULL,codigo TEXT NOT NULL,precio NUMERIC NOT NULL,descripcion TEXT NOT NULL,categoria_id INTEGER NOT NULL,pantalla TEXT NOT NULL,procesador TEXT NOT NULL,FOREIGN KEY (categoria_id) REFERENCES categorias (id))";
-const images = "CREATE TABLE imagenes (id INTEGER PRIMARY KEY AUTOINCREMENT,producto_id INTEGER NOT NULL,url TEXT NOT NULL,destacado BOOLEAN NOT NULL,FOREIGN KEY (producto_id) REFERENCES productos (id));"
-const clientes = "CREATE TABLE clientes (id INTEGER PRIMARY KEY AUTOINCREMENT,name VARCHAR(255) NOT NULL,edad VARCHAR(255) NOT NULL,dni VARCHAR(255) NOT NULL,email VARCHAR(255) NOT NULL,contrasena VARCHAR(255) NOT NULL);"
-const ventas = "CREATE TABLE ventas (cliente_id INTEGER NOT NULL,producto_id INTEGER NOT NULL,cantidad INTEGER NOT NULL,total_pagado DECIMAL(10,2),fecha INTEGER NOT NULL,ip_cliente VARCHAR(200),FOREIGN KEY (cliente_id) REFERENCES clientes(id),FOREIGN KEY (producto_id) REFERENCES productos(id));"
-
-
-dbAdmin.run(category, (err) => {
-  let question = err ? err : 'success table category';
-  console.log(question)
-})
-
-dbAdmin.run(products, (err) => {
-  let question = err ? err : 'success table products';
-  console.log(question)
-})
-
-dbAdmin.run(images, (err) => {
-  let question = err ? err : 'success table images';
-  console.log(question)
-})
-
-dbAdmin.run(clientes, (err) => {
-  let question = err ? err : 'success table clients';
-  console.log(question)
-})
-
-dbAdmin.run(ventas, (err) => {
-  let question = err ? err : 'success table ventas';
-  console.log(question)
-})
 
 
 /*=================================*/
@@ -344,8 +313,7 @@ router.post('/login', (req, res) => {
 router.get('/viewclient', (req, res) => {
   const sql = "SELECT * FROM categorias";
   dbAdmin.all(sql, (err, rows) => {
-    console.log(rows)
-    const sql_product = "SELECT * FROM productos"
+    const sql_product = "SELECT productos.*, imagenes.url, AVG(puntos.puntos) as puntos FROM productos LEFT JOIN imagenes ON productos.id = imagenes.producto_id LEFT JOIN puntos ON productos.id = puntos.producto_id GROUP BY productos.id;"
     dbAdmin.all(sql_product, (err, rows_product) => {
       const a = []
       const b = []
@@ -358,12 +326,9 @@ router.get('/viewclient', (req, res) => {
       const unicos = new Set(a);
       const unicosP = new Set(b);
       const unicosPro = new Set(c);
-      const sql_img = "SELECT * FROM imagenes";
-      dbAdmin.all(sql_img, (err, rows_img) => {
         res.render("viewclient", {
           data: rows,
           data_product: rows_product,
-          row_img: rows_img,
           nameProduct: unicos,
           namePantalla: unicosP,
           nameProcesador: unicosPro
@@ -371,7 +336,7 @@ router.get('/viewclient', (req, res) => {
       })
     })
   })
-})
+
 
 
 
@@ -379,10 +344,9 @@ router.get('/viewclient', (req, res) => {
 
 router.get('/viewclient/product/:id', (req, res) => {
   const { id } = req.params;
-  const sql = "SELECT * FROM productos WHERE categoria_id = ?";
-  const sql_img = "SELECT productos.*, imagenes.url FROM productos LEFT JOIN imagenes ON productos.id = imagenes.producto_id WHERE productos.categoria_id = ?"
+  const sql_img = "SELECT productos.*, imagenes.url, AVG(puntos.puntos) as puntos FROM productos LEFT JOIN imagenes ON productos.id = imagenes.producto_id LEFT JOIN puntos ON productos.id = puntos.producto_id WHERE productos.categoria_id = ?"
   const sql_cat = "SELECT * FROM categorias";
-  dbAdmin.all(sql, id, (err, rowsProduct) => {
+  dbAdmin.all(sql_img, id, (err, rowsProduct) => {
     const a = []
     const b = []
     const c = []
@@ -394,12 +358,10 @@ router.get('/viewclient/product/:id', (req, res) => {
     const unicos = new Set(a);
     const unicosP = new Set(b);
     const unicosPro = new Set(c);
-    dbAdmin.all(sql_img, id, (err, rowsImg) => {
       dbAdmin.all(sql_cat, (err, rowsCategory) => {
         res.render("viewclient", {
           data: rowsCategory,
           data_product: rowsProduct,
-          row_img: rowsImg,
           nameProduct: unicos,
           namePantalla: unicosP,
           nameProcesador: unicosPro
@@ -407,7 +369,6 @@ router.get('/viewclient/product/:id', (req, res) => {
       })
     })
   })
-})
 
 
 router.get('/viewproduct/product/:id', (req, res) => {
@@ -460,6 +421,7 @@ router.post('/submit_payment/:id', async (req, res) => {
   const cvv = req.body.cvv;
   const cantidad = req.body.cantidad;
   const total = req.body.total;
+  const puntos = req.body.puntos;
   const fecha = new Date();
   const fechaHoy = fecha.toString();
   const ipcliente = (req.headers['x-forwarded-for'] || '').split(',')[0] || req.connection.remoteAddress;
@@ -491,7 +453,36 @@ router.post('/submit_payment/:id', async (req, res) => {
         if (err) {
           console.log(err)
         } else {
-          res.redirect('/viewclient');
+          dbAdmin.run(`INSERT INTO puntos(client_id,producto_id,puntos) VALUES (?,?,?)`,[cliente_id,id,puntos],(err,row)=> {
+            const transporter = nodemailer.createTransport({
+              service: 'outlook',
+              port: 587,
+              tls: {
+                ciphers: "SSLv3",
+                rejectUnauthorized: false,
+              },
+              auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PW,
+              },
+            });
+
+            const mailOptions = {
+              from: process.env.EMAIL,
+              to: row.usuario,
+              subject: '¡Su compra ah finalizado!',
+              html: '<h1>¡Hola!</h1><p>Gracias por su compra!</p>' // html body
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
+          res.redirect("/viewclient");
+          })
         }
       })
     }
@@ -508,11 +499,10 @@ router.post('/submit_payment/:id', async (req, res) => {
 
 router.get('/viewclient/:nombre', (req, res) => {
   const { nombre } = req.params;
-  const sql = "SELECT * FROM productos WHERE nombre = ? OR pantalla = ? OR procesador = ?";
   const sql_query = "SELECT * FROM productos";
-  const sql_img = "SELECT productos.*, imagenes.url FROM productos LEFT JOIN imagenes ON productos.id = imagenes.producto_id WHERE productos.nombre = ? OR productos.pantalla = ? OR productos.procesador = ?"
+  const sql_img = "SELECT productos.*, imagenes.url, AVG(puntos.puntos) as puntos FROM productos LEFT JOIN imagenes ON productos.id = imagenes.producto_id LEFT JOIN puntos ON productos.id = puntos.producto_id WHERE productos.nombre = ? OR productos.pantalla = ? OR productos.procesador = ? OR puntos.puntos = ? GROUP BY productos.id"
   const sql_cat = "SELECT * FROM categorias";
-  const query = [nombre, nombre, nombre];
+  const query = [nombre, nombre, nombre, nombre];
   dbAdmin.all(sql_query, (err, row) => {
     const a = []
     const b = []
@@ -525,20 +515,19 @@ router.get('/viewclient/:nombre', (req, res) => {
     const unicos = new Set(a);
     const unicosP = new Set(b);
     const unicosPro = new Set(c);
-    dbAdmin.all(sql, query, (err, rowsProduct) => {
+
       dbAdmin.all(sql_img, query, (err, rowsImg) => {
         dbAdmin.all(sql_cat, (err, rowsCategory) => {
           res.render("viewclient", {
             data: rowsCategory,
-            data_product: rowsProduct,
-            row_img: rowsImg,
+            data_product: rowsImg,
             nameProduct: unicos,
             namePantalla: unicosP,
             nameProcesador: unicosPro
           });
         })
       })
-    })
+   
   })
 });
 
@@ -579,14 +568,41 @@ router.post('/cliente/registro', async (req, res) => {
   if (verify.success == true) {
     dbAdmin.get(`SELECT * FROM clientes WHERE email = ?`, [corre], (err, row) => {
       if (row) {
-
         res.redirect('/cliente/registro')
       } else {
         dbAdmin.get(`INSERT INTO clientes(name,edad,dni,email,contrasena) VALUES(?,?,?,?,?)`, [user, edad, dni, corre, contrasena], (err, rows) => {
           if (err) {
             console.log(err)
           } else {
-            res.redirect('/cliente/login')
+            /*Confirmacion*/
+            const transporter = nodemailer.createTransport({
+              service: 'outlook',
+              port: 587,
+              tls: {
+                ciphers: "SSLv3",
+                rejectUnauthorized: false,
+              },
+              auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PW,
+              },
+            });
+
+            const mailOptions = {
+              from: process.env.EMAIL,
+              to: row.usuario,
+              subject: '¡Bienvenido al sitio web!',
+              html: '<h1>¡Hola!</h1><p>Le damos bienvenida a nuestro sitio web, espero tenga la mas comoda</p>' // html body
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
+          res.redirect("/cliente/login");
           }
         })
       }

@@ -6,6 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/stylesheets/estilo.css">
     <title>Tienda - PC Portatiles</title>
+    <meta property="og:title" content="PC" />
+    <meta property="og:type" content="PC" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <meta property="og:image:alt" content="" />
+
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NZF6MKG97J"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-NZF6MKG97J');
+    </script>
+
+
 </head>
 
 <body>
@@ -33,28 +51,50 @@
             <a href="#">Tablets</a> 
             <% } %>-->
                     <% } %>
-                <br>
-                <h3>Nombre</h3>
-                <% for (const categoryName of nameProduct) { %>
-                    
-                    <a class="enlace" href="/viewclient/<%= categoryName %>" style="cursor: pointer;"><%= categoryName %></a>
+                        <br>
+                        <h3>Nombre</h3>
+                        <% for (const categoryName of nameProduct) { %>
 
-                    
-                <% } %>
-                <br>
-                <h3>Pantalla</h3>
-                <% for (const categoryP of namePantalla) { %>
-                   
-                        <a  class="enlace" href="/viewclient/<%= categoryP %>"  style="cursor: pointer;"><%= categoryP %></a>
-                    
-                <% } %>
-                <br>
-                <h3>Procesador</h3>
-                <% for (const categoryPro of nameProcesador) { %>
-                   
-                        <a class="enlace" href="/viewclient/<%= categoryPro %>" style="cursor: pointer;"><%= categoryPro %></a>
-                <% } %>
-                <br>
+                            <a class="enlace" href="/viewclient/<%= categoryName %>" style="cursor: pointer;">
+                                <%= categoryName %>
+                            </a>
+
+
+                            <% } %>
+                                <br>
+                                <h3>Pantalla</h3>
+                                <% for (const categoryP of namePantalla) { %>
+
+                                    <a class="enlace" href="/viewclient/<%= categoryP %>" style="cursor: pointer;">
+                                        <%= categoryP %>
+                                    </a>
+
+                                    <% } %>
+                                        <br>
+                                        <h3>Procesador</h3>
+                                        <% for (const categoryPro of nameProcesador) { %>
+
+                                            <a class="enlace" href="/viewclient/<%= categoryPro %>"
+                                                style="cursor: pointer;">
+                                                <%= categoryPro %>
+                                            </a>
+                                            <% } %>
+                                                <br>
+                                                <h3>Clasificacion</h3>
+                                                <section
+                                                    style="display: flex; flex-direction: column; position: relative; left: -20px;">
+                                                    <a class="star" href="/viewclient/1"
+                                                        style="cursor: pointer; transition: none; color: orange;">★</a>
+                                                    <a class="star" href="/viewclient/2"
+                                                        style="cursor: pointer; transition: none; color: orange;">★★</a>
+                                                    <a class="star" href="/viewclient/3"
+                                                        style="cursor: pointer; transition: none; color: orange;">★★★</a>
+                                                    <a class="star" href="/viewclient/4"
+                                                        style="cursor: pointer; transition: none; color: orange;">★★★★</a>
+                                                    <a class="star" href="/viewclient/5"
+                                                        style="cursor: pointer; transition: none; color: orange;">★★★★★</a>
+                                                </section>
+                                                <br>
             </section>
         </section>
 
@@ -66,22 +106,26 @@
                 </div>
             </div>
             <div class="fila" id="fila">
-                
-               <% for(let i=0; i < data_product.length; i++) { %>
+
+                <% for(let i=0; i < data_product.length; i++) { %>
                     <a href="/viewproduct/product/<%= data_product[i].id%>" class="a">
                         <div class="item">
                             <div class="contenedor-foto">
-                                <img src="<%= row_img[i ].url %>" alt="" class="img_product">
+                                <img src="<%= data_product[i].url %>" alt="" class="img_product">
                             </div>
                             <div class="position">
                                 <p class="descripcion">
                                     <%= data_product[i].nombre %>
                                 </p>
+
                                 <section class="codigo" style="display: none;">
                                     <%= data_product[i].codigo %>
                                 </section>
                                 <article class="description" style="display: block;">
                                     <%= data_product[i].descripcion%>
+                                </article>
+                                <article class="description" style="display: block;">
+                                    Promedio: <%= data_product[i].puntos%>%
                                 </article>
                                 <p class="procesador" style="display: none;">
                                     <%= data_product[i].procesador %>
@@ -92,10 +136,11 @@
                                 <p class="pantalla" style="display: none;">
                                     <%= data_product[i].pantalla %>
                                 </p>
+
                                 <p class="id" style="display: none;">
                                     <%= data_product[i].id %>
                                 </p>
-                                
+
                             </div>
                         </div>
                     </a>
