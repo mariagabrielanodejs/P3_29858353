@@ -326,16 +326,16 @@ router.get('/viewclient', (req, res) => {
       const unicos = new Set(a);
       const unicosP = new Set(b);
       const unicosPro = new Set(c);
-        res.render("viewclient", {
-          data: rows,
-          data_product: rows_product,
-          nameProduct: unicos,
-          namePantalla: unicosP,
-          nameProcesador: unicosPro
-        });
-      })
+      res.render("viewclient", {
+        data: rows,
+        data_product: rows_product,
+        nameProduct: unicos,
+        namePantalla: unicosP,
+        nameProcesador: unicosPro
+      });
     })
   })
+})
 
 
 
@@ -358,17 +358,17 @@ router.get('/viewclient/product/:id', (req, res) => {
     const unicos = new Set(a);
     const unicosP = new Set(b);
     const unicosPro = new Set(c);
-      dbAdmin.all(sql_cat, (err, rowsCategory) => {
-        res.render("viewclient", {
-          data: rowsCategory,
-          data_product: rowsProduct,
-          nameProduct: unicos,
-          namePantalla: unicosP,
-          nameProcesador: unicosPro
-        });
-      })
+    dbAdmin.all(sql_cat, (err, rowsCategory) => {
+      res.render("viewclient", {
+        data: rowsCategory,
+        data_product: rowsProduct,
+        nameProduct: unicos,
+        namePantalla: unicosP,
+        nameProcesador: unicosPro
+      });
     })
   })
+})
 
 
 router.get('/viewproduct/product/:id', (req, res) => {
@@ -453,35 +453,37 @@ router.post('/submit_payment/:id', async (req, res) => {
         if (err) {
           console.log(err)
         } else {
-          dbAdmin.run(`INSERT INTO puntos(client_id,producto_id,puntos) VALUES (?,?,?)`,[cliente_id,id,puntos],(err,row)=> {
-            const transporter = nodemailer.createTransport({
-              service: 'outlook',
-              port: 587,
-              tls: {
-                ciphers: "SSLv3",
-                rejectUnauthorized: false,
-              },
-              auth: {
-                user: process.env.EMAIL,
-                pass: process.env.EMAIL_PW,
-              },
-            });
+          dbAdmin.run(`INSERT INTO puntos(client_id,producto_id,puntos) VALUES (?,?,?)`, [cliente_id, id, puntos], (err, roww) => {
+            dbAdmin.get(`SELECT * FROM clientes WHERE id = ?`, [cliente_id], (err, row) => {
+              const transporter = nodemailer.createTransport({
+                service: 'outlook',
+                port: 587,
+                tls: {
+                  ciphers: "SSLv3",
+                  rejectUnauthorized: false,
+                },
+                auth: {
+                  user: process.env.EMAIL,
+                  pass: process.env.EMAIL_PW,
+                },
+              });
 
-            const mailOptions = {
-              from: process.env.EMAIL,
-              to: row.usuario,
-              subject: '¡Su compra ah finalizado!',
-              html: '<h1>¡Hola!</h1><p>Gracias por su compra!</p>' // html body
-            };
+              const mailOptions = {
+                from: process.env.EMAIL,
+                to: row.email,
+                subject: '¡Su compra ah finalizado!',
+                html: '<h1>¡Hola!</h1><p>Gracias por su compra!</p>' // html body
+              };
 
-            transporter.sendMail(mailOptions, function (error, info) {
-              if (error) {
-                console.log(error);
-              } else {
-                console.log('Email sent: ' + info.response);
-              }
-            });
-          res.redirect("/viewclient");
+              transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                  console.log(error);
+                } else {
+                  console.log('Email sent: ' + info.response);
+                }
+              });
+              res.redirect("/viewclient");
+            })
           })
         }
       })
@@ -516,18 +518,18 @@ router.get('/viewclient/:nombre', (req, res) => {
     const unicosP = new Set(b);
     const unicosPro = new Set(c);
 
-      dbAdmin.all(sql_img, query, (err, rowsImg) => {
-        dbAdmin.all(sql_cat, (err, rowsCategory) => {
-          res.render("viewclient", {
-            data: rowsCategory,
-            data_product: rowsImg,
-            nameProduct: unicos,
-            namePantalla: unicosP,
-            nameProcesador: unicosPro
-          });
-        })
+    dbAdmin.all(sql_img, query, (err, rowsImg) => {
+      dbAdmin.all(sql_cat, (err, rowsCategory) => {
+        res.render("viewclient", {
+          data: rowsCategory,
+          data_product: rowsImg,
+          nameProduct: unicos,
+          namePantalla: unicosP,
+          nameProcesador: unicosPro
+        });
       })
-   
+    })
+
   })
 });
 
@@ -547,7 +549,7 @@ router.post('/cliente/login', (req, res) => {
     }
   })
 })
-router.get('/cliente/login',prl, (req, res) => {
+router.get('/cliente/login', prl, (req, res) => {
   res.render('login');
 });
 
@@ -602,12 +604,12 @@ router.post('/cliente/registro', async (req, res) => {
                 console.log('Email sent: ' + info.response);
               }
             });
-          res.redirect("/cliente/login");
+            res.redirect("/cliente/login");
           }
         })
       }
     })
-  }else{
+  } else {
     res.status(500).send('Verifica el captcha para continuar');
   }
 });
