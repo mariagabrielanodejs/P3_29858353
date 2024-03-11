@@ -455,7 +455,9 @@ router.post('/submit_payment/:id', async (req, res) => {
           console.log(err)
         } else {
           dbAdmin.run(`INSERT INTO puntos(client_id,producto_id,puntos) VALUES (?,?,?)`, [cliente_id, id, puntos], (err, roww) => {
+		  
             dbAdmin.get(`SELECT * FROM clientes WHERE id = ?`, [cliente_id], (err, row) => {
+		    console.log(roww);
               const transporter = nodemailer.createTransport({
                 service: 'outlook',
                 port: 587,
