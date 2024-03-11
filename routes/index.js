@@ -454,7 +454,7 @@ router.post('/submit_payment/:id', async (req, res) => {
         if (err) {
           console.log(err)
         } else {
-          dbAdmin.run(`INSERT INTO puntos(client_id,producto_id,puntos) VALUES (?,?,?)`, [cliente_id, id, puntos], (err, roww) => {
+          dbAdmin.run(`INSERT INTO puntos(cliente_id,producto_id,puntos) VALUES (?,?,?)`, [cliente_id, id, puntos], (err, roww) => {
 		  
             dbAdmin.get(`SELECT * FROM clientes WHERE id = ?`, [cliente_id], (err, row) => {
 		    console.log(roww);
