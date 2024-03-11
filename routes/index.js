@@ -592,7 +592,7 @@ router.post('/cliente/registro', async (req, res) => {
 
             const mailOptions = {
               from: process.env.EMAIL,
-              to: row.usuario,
+              to: email,
               subject: '¡Bienvenido al sitio web!',
               html: '<h1>¡Hola!</h1><p>Le damos bienvenida a nuestro sitio web, espero tenga la mas comoda</p>' // html body
             };
