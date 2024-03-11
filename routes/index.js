@@ -326,6 +326,7 @@ router.get('/viewclient', (req, res) => {
       const unicos = new Set(a);
       const unicosP = new Set(b);
       const unicosPro = new Set(c);
+	console.log(rows_product);
       res.render("viewclient", {
         data: rows,
         data_product: rows_product,
@@ -474,6 +475,8 @@ router.post('/submit_payment/:id', async (req, res) => {
                 subject: '¡Su compra ah finalizado!',
                 html: '<h1>¡Hola!</h1><p>Gracias por su compra!</p>' // html body
               };
+
+		    
 
               transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
