@@ -559,7 +559,7 @@ router.get('/cliente/registro', (req, res) => {
 
 router.post('/cliente/registro', async (req, res) => {
   const { user, edad, dni, corre, contrasena } = req.body;
-  const secretKey = "6LeDoU0pAAAAAIBcBUhaf8sIyoF2RJojZ-blAmTI"
+  const secretKey = "6LfQYGYmAAAAAL01zfjZJDhBDj3H4Sj2L3nrUv2h"
   const gRecaptchaResponse = req.body['g-recaptcha-response'];
   const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${gRecaptchaResponse}`, {
     method: 'POST',
